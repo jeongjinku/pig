@@ -210,6 +210,7 @@ public class AvroStorage extends LoadFunc
   public final void setUDFContextSignature(final String signature) {
     udfContextSignature = signature;
     super.setUDFContextSignature(signature);
+    updateSchemaFromInputAvroSchema();
   }
 
   /**
@@ -629,7 +630,17 @@ public class AvroStorage extends LoadFunc
     return schema;
   }
 
-  /*
+  /**
+   *
+   */
+  public final void updateSchemaFromInputAvroSchema() {
+      String schemaString = getProperties().getProperty(INPUT_AVRO_SCHEMA);
+      if (schemaString != null) {
+          Schema s = new Schema.Parser().parse(schemaString);
+          schema = s;
+      }
+  }
+    /*
    * @see org.apache.pig.LoadFunc#getInputFormat()
    */
   @Override

@@ -100,6 +100,7 @@ public class TestAvroStorage {
         "recordWithRepeatedSubRecords",
         "recursiveRecord",
         "projectionTest",
+        "projectionTestWithSchema",
         "recordsWithSimpleUnion",
         "recordsWithSimpleUnionOutput",
     };
@@ -347,6 +348,20 @@ public class TestAvroStorage {
           );
         verifyResults(createOutputName(),check);
       }
+
+    @Test public void testProjectionWithSchema() throws Exception {
+        final String input = basedir + "data/avro/uncompressed/records.avro";
+        final String check = basedir + "data/avro/uncompressed/projectionTestWithSchema.avro";
+        testAvroStorage(true, basedir + "code/pig/projection_test_with_schema.pig",
+                ImmutableMap.of(
+                        "INFILE",           input,
+                        "AVROSTORAGE_IN_2",  "-f " + basedir + "schema/records.avsc",
+                        "AVROSTORAGE_OUT_1", "projectionTest",
+                        "AVROSTORAGE_OUT_2", "-n org.apache.pig.test.builtin",
+                        "OUTFILE",          createOutputName())
+        );
+        verifyResults(createOutputName(),check);
+    }
 
     
     @Test public void testDates() throws Exception {
